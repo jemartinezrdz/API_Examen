@@ -1,0 +1,29 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap');
+
+
+html, body{
+    background-color:#02a0f0;
+}
+.containerPrincipal{
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    /*border: 1px solid #1a5276;*/
+    border-radius: 8px;
+    box-shadow: 12px 12px 150px #1adadd;
+    padding: 40px;
+    background-color: white;
+    font-family: 'Roboto', sans-serif;
+}
+.containerSecundario label{
+    font-family: 'Roboto', sans-serif;
+    font-size:14px;
+}
+.containerSecundario button{
+    float: right;
+}
+.title-login{
+    margin-bottom:50px;
+    font-size:24px;
+}

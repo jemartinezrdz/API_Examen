@@ -1,0 +1,53 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans&display=swap');
+
+
+.container-home{
+    padding-left:270px;
+    padding-right:20px;
+    padding-top:20px;
+    background:white;
+    font-family:'Roboto', sans-serif;
+}
+.container-child-home{
+    height:85.5vh;
+}
+.container-footer-home{
+    color:#ffbe32;
+    font-family:'Roboto', sans-serif;
+    font-size:14px;
+    height:10%;
+    line-height:30px;
+    background:#222324;
+    text-align:center;
+    position:absolute;
+    bottom:0;
+    left:0;
+    width:100%;
+    padding-left:270px;
+}
+th{
+    font-family:'Roboto', sans-serif;
+    font-weight:700;
+}
+td {
+    font-family:'Noto Sans', sans-serif;
+}
+.container-superior-izq{
+    float: left;
+    padding-right:50%;
+}
+.container-superior-der{
+    display: block;
+    float: right;
+}
+.cuadricula{
+    margin-right:-5px;
+}
+.tabla{
+    margin-left:10px;
+}
+.recibo{
+    margin-bottom:10px;
+}
