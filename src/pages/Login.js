@@ -5,10 +5,11 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import axios from 'axios';
 import md5 from 'md5';
 import Cookies from 'universal-cookie';
+import { Modal, ModalBody, ModalFooter, ModalHeader } from 'reactstrap';
 
 /*URL para consumir la API*/
-const baseUrl="";
-/*const cookies = new Cookies();*/
+const baseUrl="http://201.132.203.2/ConsultarRecibos";
+const cookies = new Cookies();
 
 class Login extends Component {
     state={
@@ -29,18 +30,18 @@ class Login extends Component {
     }
 
     iniciarSesion=async()=>{
-        await axios.get(baseUrl, {params: {username: this.state.form.username, 
-                                           password: md5(this.state.form.password)}})
+        await axios.get(baseUrl, {params: {usuario: this.state.form.username, 
+                                           pass: md5(this.state.form.password)}})
         .then(response=>{
             return response.data;
         })
         .then(response=>{
             if(response.length>0){
                 var respuesta=response[0];
-                /*Variables de sesion llamadas igual que los atributos de la API
-                cookies.set('id', respuesta.id, {path: "/"});
-                */
-
+                /*Variables de sesion llamadas igual que los atributos de la API*/
+                
+               cookies.set('usuario', respuesta.usuario, {path: "/"});
+               cookies.set('pass', respuesta.pass, {path: "/"});
                 /*Redireccionamiento al Home*/
                 window.location.href="./home";
 
@@ -51,6 +52,7 @@ class Login extends Component {
         .catch(error=>{
             console.log(error);
         })
+        
     }
 
     render(){

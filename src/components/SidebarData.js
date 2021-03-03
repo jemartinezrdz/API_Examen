@@ -5,15 +5,15 @@ import * as IoIcons from 'react-icons/io';
 
 export const SidebarData = [
   {
-    title: 'Inicio',
+    title: 'Versión Tabla',
     path: '/home',
     icon: <AiIcons.AiFillHome />,
     cName: 'nav-text'
   },
   {
-    title: 'Cerrar Sesión',
-    path: '/ver',
-    icon: <IoIcons.IoIosLogOut />,
+    title: 'Versión Recibos',
+    path: '/recibos',
+    icon: <FaIcons.FaMoneyBillAlt />,
     cName: 'nav-text'
   }
 ];

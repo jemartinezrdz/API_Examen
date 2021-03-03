@@ -10,7 +10,7 @@ import Moment from 'moment';
 
 const cookies = new Cookies();
 
-class Home extends Component {
+class Recibos extends Component {
     state={
         data:[],
         modalInsertar: false,
@@ -45,7 +45,7 @@ class Home extends Component {
         }
       
       peticionPut=()=>{
-        axios.patch("http://201.132.203.2/ActualizarRecibos/", this.state.form).then(response=>{
+        axios.patch("http://201.132.203.2/ActualizarRecibo/", this.state.form).then(response=>{
           this.modalInsertar();
           this.peticionGet();
         })
@@ -106,7 +106,7 @@ class Home extends Component {
                 
                 <Navbar></Navbar>
                 <div className='container-home'>
-                <div className='container-child-home'>
+                <div className='container-child2-home'>
                     <div className="container">
                         <div className="row">
                             <div className="container-superior-izq">   
@@ -122,51 +122,36 @@ class Home extends Component {
                         </div>
                     </div>
                     <br/>
-                    <div className="container-home">
+
                     
-                        <div className="container">
-                        <table className="table table-sm">
-                            <thead>
-                                <tr>
-                                <th>#</th>
-                                <th>Proveedor</th>
-                                <th>Monto</th>
-                                <th>Moneda</th>
-                                <th>Fecha</th>
-                                <th>Comentario</th>
-                                <th>Acci&oacute;n</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {this.state.data.map(Recibo=>{
-                                    return(
-                                    <tr>
-                                        <th>{Recibo.idRecibo}</th>
-                                        <td>{Recibo.proveedor}</td>
-                                        <td>${new Intl.NumberFormat("en-EN").format(Recibo.monto)}</td>
-                                        <td><span className="text-uppercase">{Recibo.moneda}</span></td>
-                                        <td>{Moment(Recibo.fecha).format('DD-MM-YYYY')}</td>
-                                        <td><small className="text-uppercase">{Recibo.comentario}</small></td>
-                                        <td><button className="btn btn-secondary btn-sm cuadricula" onClick={()=>{this.seleccionarRecibo(Recibo); this.modalInsertar()}}>
-                                                <i className="far fa-edit"></i>
-                                            </button>
-                                            {" "}
-                                            <button className="btn btn-danger btn-sm tabla" onClick={()=>{this.seleccionarRecibo(Recibo); this.setState({modalEliminar: true})}}>
-                                                <i className="far fa-trash-alt"></i>
-                                            </button>
-                                        </td>
-                                    </tr>
-                                    )
-                                }
-                                )}
-                            </tbody>
-                        </table>
-                    </div>
-                    </div>
+                    
+
+                    <div className="container">
+                    {this.state.data.map(Recibo=>{
+                        return(
+                        <div className="card recibo">
+                            <h6 className="card-header font-weight-bold">Recibo no. {Recibo.idRecibo}</h6>
+                            <div className="card-body">
+                                <h6 className="card-subtitle mb-2 text-muted">Proveedor: <span className="font-weight-bold tabla">{Recibo.proveedor}</span></h6>
+                                <p className="card-text"><small className="text-uppercase">Monto:</small> ${new Intl.NumberFormat("en-EN").format(Recibo.monto)}<span className="text-uppercase tabla">{Recibo.moneda}</span></p>
+                                <p className="card-text"><small className="text-uppercase">Comentario: {Recibo.comentario}</small></p>
+                                <p className="card-text"><small className="text-uppercase">Registro:</small> {Moment(Recibo.fecha).format('DD-MM-YYYY')}</p>
+                                <button className="btn btn-secondary btn-sm" onClick={()=>{this.seleccionarRecibo(Recibo); this.modalInsertar()}}>
+                                    <i className="far fa-edit"></i>
+                                </button>
+                                {" "}
+                                <button className="btn btn-danger btn-sm" onClick={()=>{this.seleccionarRecibo(Recibo); this.setState({modalEliminar: true})}}>
+                                    <i className="far fa-trash-alt"></i>
+                                </button>
+                            </div>
+                        </div>
+                        )
+                    }
+                    )}
+                </div>
 
                 </div>
             </div>
-                <Footer></Footer>
 
                 <Modal isOpen={this.state.modalInsertar}>
                 <ModalHeader style={{display: 'block'}}>
@@ -217,4 +202,4 @@ class Home extends Component {
     }
 }
 
-export default Home;
+export default Recibos;
