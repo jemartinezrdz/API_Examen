@@ -11,8 +11,7 @@ axios.post(
   'http://201.132.203.2/RegistrarRecibo/',
   {
       headers: { 
-          'Authorization' 'Basic xxxxxxxxxxxxxxxxxxx',
-          'Content-Type': 'text/plain' 
+          'Authorization': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiJkYTI1NDc3OC1hNWVmLTQ4NjQtODNlNy01NDI0YzE2MTc2YjMiLCJlbXByZXNhIjoiQkJBSklPIiwicHJvZHVjdG8iOiJGZWVkRGF0b3MiLCJzZXJ2aWNpbyI6IndzUmVjaWJvIiwidmVyc2lvbiI6IjEuMCIsImZlY2hhIjoiMTgvMDUvMjAyMCIsIm5iZiI6MTYxNDg0Mjg1MywiZXhwIjoxNjE0OTI5MjUzLCJpc3MiOiJzb2ZuZXRlYy5jb20iLCJhdWQiOiJSZWNpYm9Db21wcmFzIn0.MTJlPoE1eQ4UdKKsdNOPgChq1laYlViyy9Xye6LCVDw'
       }
   }
 );
