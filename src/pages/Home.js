@@ -4,18 +4,18 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import Footer from '../components/Footer';
 import Navbar from '../components/Navbar';
 import { Modal, ModalBody, ModalFooter, ModalHeader } from 'reactstrap';
-import axios from 'axios';
 import Cookies from 'universal-cookie';
 import Moment from 'moment';
+import axios from 'axios';
 
 const cookies = new Cookies();
+const fetch = require('node-fetch');
 
 class Home extends Component {
     state={
         data:[],
         modalInsertar: false,
         modalEliminar: false,
-        curTime: new Date().toLocaleString(),
         form:{
           idRecibo: '',
           proveedor: '',
@@ -25,38 +25,125 @@ class Home extends Component {
           tipoModal: ''
         }
       }
-      
       peticionGet=()=>{
-      axios.get("http://201.132.203.2/ConsultarRecibos/").then(response=>{
-        this.setState({data: response.data});
-      }).catch(error=>{
-        console.log(error.message);
-      })
-      }
-      
-      peticionPost=async()=>{
-          delete this.state.form.idRecibo;
-        await axios.post("http://201.132.203.2/RegistrarRecibo/",this.state.form).then(response=>{
+        axios.get('http://201.132.203.2/ConsultarRecibos/').then(response=>{
+          this.setState({data: response.data});
+        }).catch(error=>{
+          console.log(error.message);
+        })
+        }
+
+        peticionPost=()=>{
+            /*
+                'http://201.132.203.2/RegistrarRecibo/',
+                {
+                    headers: { 
+                        
+                    },
+                    data: { 
+                        proveedor:this.state.form.proveedor,
+                        monto:this.state.form.monto,
+                        moneda:this.state.form.moneda,
+                        comentario:this.state.form.comentario
+                    }
+                }
+              ).then(response=>{
+                this.modalInsertar();
+                this.peticionGet();
+              }).catch(error=>{
+                console.log(error.message);
+              });*/
+              
+              fetch('http://201.132.203.2/RegistrarRecibo/',{
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer '+cookies.get('token')
+                },
+                body: JSON.stringify({"proveedor": this.state.form.proveedor, 
+                                      "monto": parseInt(this.state.form.monto,10), 
+                                      "moneda": this.state.form.moneda , 
+                                      "comentario": this.state.form.comentario}),
+                cache: 'no-cache'
+            })
+            .then(function(response) {
+                return response.json();
+                
+            })
+            .then(function(data) {
+                console.log('data = ', data);
+            })
+            .catch(function(err) {
+                console.error(err);
+            });
             this.modalInsertar();
             this.peticionGet();
-          }).catch(error=>{
-            console.log(error.message);
-          })
-        }
+          }
       
       peticionPut=()=>{
-        axios.patch("http://201.132.203.2/ActualizarRecibos/", this.state.form).then(response=>{
+        fetch('http://201.132.203.2/ActualizarRecibo/',{
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer '+cookies.get('token')
+            },
+            body: JSON.stringify({"idRecibo":this.state.form.idRecibo,
+                                  "proveedor": this.state.form.proveedor, 
+                                  "monto": this.state.form.monto, 
+                                  "moneda": this.state.form.moneda, 
+                                  "comentario": this.state.form.comentario}),
+            cache: 'no-cache'
+        })
+        .then(function(response) {
+            return response.json();
+            
+        })
+        .then(function(data) {
+            console.log('data = ', data);
+        })
+        .catch(function(err) {
+            console.error(err);
+        });
+        this.modalInsertar();
+        this.peticionGet();
+          /*
+        axios.patch('http://201.132.203.2/ActualizarRecibo/', 
+                    {
+                        headers:
+                        {
+                            'Authorization': 'Bearer '+cookies.get('token')
+                        },
+                        data:
+                        {
+                            idRecibo:this.state.form.idRecibo,
+                            proveedor:this.state.form.proveedor,
+                            monto:parseInt(this.state.form.monto,10),
+                            moneda:this.state.form.moneda,
+                            comentario: this.state.form.comentario
+                        }
+                        
+                    }
+                   ).then(response=>{
           this.modalInsertar();
           this.peticionGet();
-        })
+        })*/
       }
       
       peticionDelete=()=>{
-        axios.delete("http://201.132.203.2/BorrarRecibo/"+this.state.form.idRecibo).then(response=>{
-          this.setState({modalEliminar: false});
-          this.peticionGet();
-        })
-    }
+        axios.delete(
+            'http://201.132.203.2/BorrarRecibo/',
+            {
+                headers:{
+                    'Authorization': 'Bearer '+cookies.get('token')
+                },
+                data: {
+                idRecibo: this.state.form.idRecibo
+                }
+          }).then(response=>{
+            this.setState({modalEliminar: false});
+            this.peticionGet();
+          });
+      }
       
       modalInsertar=()=>{
         this.setState({modalInsertar: !this.state.modalInsertar});
@@ -86,17 +173,15 @@ class Home extends Component {
         console.log(this.state.form);
         }
         
-          componentDidMount() {
-            this.peticionGet();
-
-        
-          }
+        componentDidMount() {
+                this.peticionGet();
+            
+        }
     /* Método para cerrar Sesión */
         cerrarSesion=()=>{
             /* 
             Eliminación de las variables de sesión*/
-            cookies.remove('usuario', {path: "/"});
-            cookies.remove('pass', {path: "/"});
+            cookies.remove('token', {path: "/"});
             window.location.href="./";
         }
     render() {
@@ -166,7 +251,6 @@ class Home extends Component {
 
                 </div>
             </div>
-                <Footer></Footer>
 
                 <Modal isOpen={this.state.modalInsertar}>
                 <ModalHeader style={{display: 'block'}}>

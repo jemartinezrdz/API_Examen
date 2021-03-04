@@ -2,7 +2,7 @@
   "homepage": "https://api-react-jmartinez.herokuapp.com",
   "name": "front-end",
   "version": "0.1.0",
-  "engines":{
+  "engines": {
     "node": "12.18.2"
   },
   "private": true,
@@ -15,6 +15,7 @@
     "bootstrap": "^4.6.0",
     "md5": "^2.3.0",
     "moment": "^2.29.1",
+    "node-fetch": "^2.6.1",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "react-icons": "^4.2.0",

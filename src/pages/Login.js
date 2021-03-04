@@ -2,20 +2,18 @@
 import React, { Component } from 'react';
 import '../css/Login.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import axios from 'axios';
-import md5 from 'md5';
 import Cookies from 'universal-cookie';
-import { Modal, ModalBody, ModalFooter, ModalHeader } from 'reactstrap';
 
-/*URL para consumir la API*/
-const baseUrl="http://201.132.203.2/ConsultarRecibos";
+/*cookies*/
 const cookies = new Cookies();
+const fetch = require('node-fetch');
 
 class Login extends Component {
     state={
+        data:[],
         form:{
-            username: '',
-            password: ''
+            usuario: '',
+            contrasena: ''
         }
     }
 
@@ -28,30 +26,30 @@ class Login extends Component {
         });
         console.log(this.state.form);
     }
-
-    iniciarSesion=async()=>{
-        await axios.get(baseUrl, {params: {usuario: this.state.form.username, 
-                                           pass: md5(this.state.form.password)}})
-        .then(response=>{
-            return response.data;
+    
+    iniciarSesion=()=>{
+        
+        fetch('http://201.132.203.2/login',{
+            method: 'POST',
+            headers: {
+               'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({"usuario": this.state.form.username, "contrasena": this.state.form.password}),
+            cache: 'no-cache'
+           })
+           .then(function(response) {
+            return response.json();
+            
         })
-        .then(response=>{
-            if(response.length>0){
-                var respuesta=response[0];
-                /*Variables de sesion llamadas igual que los atributos de la API*/
-                
-               cookies.set('usuario', respuesta.usuario, {path: "/"});
-               cookies.set('pass', respuesta.pass, {path: "/"});
-                /*Redireccionamiento al Home*/
-                window.location.href="./home";
-
-            }else{
-                alert('El usuario o la contraseña no son correctos');
-            }
+        .then(function(data) {
+            console.log('data = ', data);
+            cookies.set('token',data.token, {path:"/"});
+            console.log('Token generado:=> '+cookies.get('token'));
+            window.location.href="./home";
         })
-        .catch(error=>{
-            console.log(error);
-        })
+        .catch(function(err) {
+            console.error(err);
+        });
         
     }
 
