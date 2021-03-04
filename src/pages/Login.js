@@ -2,6 +2,7 @@
 import React, { Component } from 'react';
 import '../css/Login.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { Modal, ModalBody, ModalFooter, ModalHeader } from 'reactstrap';
 import Cookies from 'universal-cookie';
 
 /*cookies*/
@@ -12,6 +13,7 @@ class Login extends Component {
     state={
         data:[],
         modalError: false,
+        modalVacios: false,
         form:{
             usuario: '',
             contrasena: ''
@@ -39,22 +41,36 @@ class Login extends Component {
            })
            .then(function(response) {
             return response.json();
-            
         })
         .then(function(data) {
-            console.log('data = ', data);
             
-            cookies.set('token',data.token, {path:"/"});
-            console.log('Token generado:=> '+cookies.get('token'));
-            localStorage.setItem('token',cookies.get('token'));
-            window.location.href="./home";
+            console.log('data = ', data);
+                cookies.set('token',data.token, {path:"/"});
+                console.log('Token generado:=> '+cookies.get('token'));
+                localStorage.setItem('token',cookies.get('token'));
+                window.location.href="./home";
         })
         .catch(function(err) {
             console.error(err);
-            alert("Datos incorrectos o inexistentes");
         });
+        if(this.state.form.username==="" || this.state.form.password ===""){
+            this.modalVacios();
+
+        }else{
+            if(!localStorage.getItem('token')){
+                this.modalError();
+            }
+        }
+        
+            
         
     }
+    modalError=()=>{
+        this.setState({modalError: !this.state.modalError});
+      }
+      modalVacios=()=>{
+        this.setState({modalVacios: !this.state.modalVacios});
+      }
 
     render(){
         return(
@@ -80,6 +96,29 @@ class Login extends Component {
                 </div>
               </div>
 
+              <Modal isOpen={this.state.modalError}>
+                <ModalHeader style={{display: 'block'}}>
+                  <span>Error al iniciar sesi&oacute;n</span><span style={{float: 'right'}} onClick={()=>this.modalError()}>x</span>
+                </ModalHeader>
+                <ModalBody>
+                  <span>Los datos ingresados son incorrectos o inexistentes.</span>
+                </ModalBody>
+                <ModalFooter>
+                            <button className="btn btn-dark" onClick={()=>this.modalError()}>Aceptar</button>
+                        </ModalFooter>
+                </Modal>
+
+                <Modal isOpen={this.state.modalVacios}>
+                <ModalHeader style={{display: 'block'}}>
+                  <span>Error al iniciar sesi&oacute;n</span><span style={{float: 'right'}} onClick={()=>this.modalVacios()}>x</span>
+                </ModalHeader>
+                <ModalBody>
+                  <span>Los campos no pueden estar vac&iacute;os.</span>
+                </ModalBody>
+                <ModalFooter>
+                            <button className="btn btn-dark" onClick={()=>this.modalVacios()}>Aceptar</button>
+                        </ModalFooter>
+                </Modal>
             </div>
         )
     }
