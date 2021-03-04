@@ -1,0 +1,18 @@
+axios.delete(
+  'http://201.132.203.2/BorrarRecibo',
+  headers: {
+    'Authorization':authorizationToken
+  },
+  data: {
+    source: source
+  }
+});
+axios.post(
+  'http://201.132.203.2/RegistrarRecibo/',
+  {
+      headers: { 
+          'Authorization' 'Basic xxxxxxxxxxxxxxxxxxx',
+          'Content-Type': 'text/plain' 
+      }
+  }
+);
