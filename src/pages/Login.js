@@ -43,8 +43,10 @@ class Login extends Component {
         })
         .then(function(data) {
             console.log('data = ', data);
+            
             cookies.set('token',data.token, {path:"/"});
             console.log('Token generado:=> '+cookies.get('token'));
+            localStorage.setItem('token',cookies.get('token'));
             window.location.href="./home";
         })
         .catch(function(err) {

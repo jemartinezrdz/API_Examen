@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import '../css/Home.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import Footer from '../components/Footer';
 import Navbar from '../components/Navbar';
 import { Modal, ModalBody, ModalFooter, ModalHeader } from 'reactstrap';
 import axios from 'axios';
@@ -180,6 +179,7 @@ class Recibos extends Component {
             /* 
             Eliminación de las variables de sesión*/
             cookies.remove('token', {path: "/"});
+            localStorage.removeItem('token');
             window.location.href="./";
         }
     render() {
