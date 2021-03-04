@@ -1,0 +1,12 @@
+fetch('http://201.132.203.2/login',{
+ method: 'POST',
+ headers: {
+	'Content-Type': 'application/json'
+ },
+ body: JSON.stringify({"usuario": , "contrasena":}),
+ cache: 'no-cache'
+})
+.then(function(data){
+	cookies.set('token',data.token, {path:"/"});
+	console.log('Token generado:=> '+cookies.get('token'));
+})
