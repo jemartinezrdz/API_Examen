@@ -11,12 +11,12 @@ const fetch = require('node-fetch');
 class Login extends Component {
     state={
         data:[],
+        modalError: false,
         form:{
             usuario: '',
             contrasena: ''
         }
     }
-
     handleChange=async e=>{
         await this.setState({
             form:{
@@ -51,13 +51,14 @@ class Login extends Component {
         })
         .catch(function(err) {
             console.error(err);
+            alert("Datos incorrectos o inexistentes");
         });
         
     }
 
     render(){
         return(
-            <>
+            <div>
               <div className="body-login">
                 <div className="containerPrincipal bg-light">
                 <h5 className="text-center title-login">Iniciar Sesi&oacute;n</h5>
@@ -78,7 +79,8 @@ class Login extends Component {
                     </div>
                 </div>
               </div>
-            </>
+
+            </div>
         )
     }
 }
