@@ -59,13 +59,13 @@ this.setState({ monto: event.target.value }, () => {
 }
 
 validateMonto = () => {
-const { monto } = this.state;
-let regex = new RegExp("^[0-9]+$");
+  const { monto } = this.state;
+  let regex = new RegExp("^[0-9.]+$");
 
-    this.setState({
-      montoError:
-        regex.test(monto) === true ? null : 'Sólo se admiten números enteros.'
-    });
+      this.setState({
+        montoError:
+          regex.test(monto) === true ? null : 'Sólo se admiten números enteros o decimales.'
+      });
 }
 
 handleMonedaChange = (event) => {
@@ -142,7 +142,7 @@ peticionPost=()=>{
             'Authorization': 'Bearer '+cookies.get('token')
         },
         body: JSON.stringify({"proveedor": this.state.proveedor, 
-                              "monto": parseInt(this.state.monto,10), 
+                              "monto": parseFloat(this.state.monto), 
                               "moneda": this.state.moneda , 
                               "comentario": this.state.comentario}),
         cache: 'no-cache'
@@ -170,7 +170,7 @@ peticionPut=()=>{
         },
         body: JSON.stringify({"idRecibo":this.state.form.idRecibo,
                               "proveedor": this.state.form.proveedor, 
-                              "monto": parseInt(this.state.form.monto,10), 
+                              "monto": parseFloat(this.state.monto), 
                               "moneda": this.state.form.moneda, 
                               "comentario": this.state.form.comentario}),
         cache: 'no-cache'
