@@ -10,309 +10,308 @@ const cookies = new Cookies();
 const fetch = require('node-fetch');
 
 class ViewTablas extends Component {
-    state={
-        data:[],
-        ultimo:[],
-        modalInsertar: false,
-        modalEliminar: false,
-        modalEditar: false,
-        modalVacios: false,
-    form:{
-      idRecibo: '',
-      proveedor: '',
-      monto: '',
-      moneda: '',
-      comentario: '',
-      tipoModal: ''
-    },
-    proveedor:'',
-    monto: '',
-    moneda: '',
-    comentario: '',
-    provError: '',
-    montoError: '',
-    monError: '',
-    comError: ''
-  }
-  
-  /* VALIDACIONES */
-  handleProvChange = (event) => {
-    this.setState({proveedor: event.target.value }, () => {
-      this.validateProv();
-    });
-  }
+  state={
+    data:[],
+    ultimo:[],
+    modalInsertar: false,
+    modalEliminar: false,
+    modalEditar: false,
+    modalVacios: false,
+form:{
+  idRecibo: '',
+  proveedor: '',
+  monto: '',
+  moneda: '',
+  comentario: '',
+  tipoModal: ''
+},
+proveedor:'',
+monto: '',
+moneda: '',
+comentario: '',
+provError: '',
+montoError: '',
+monError: '',
+comError: ''
+}
 
-  validateProv = () => {
-    const { proveedor } = this.state;
-    let regex = new RegExp("^[a-zA-Z0-9 ]+$");
+/* VALIDACIONES */
+handleProvChange = (event) => {
+this.setState({proveedor: event.target.value }, () => {
+  this.validateProv();
+});
+}
 
-    this.setState({
-      provError:
-        regex.test(proveedor)=== true ? null : 'Sólo se admiten letras, números y espacios'
-    });
-  }
+validateProv = () => {
+const { proveedor } = this.state;
+let regex = new RegExp("^[a-zA-Z0-9 ]+$");
 
-  handleMontoChange = (event) => {
-    this.setState({ monto: event.target.value }, () => {
-      this.validateMonto();
-    });
-  }
+this.setState({
+  provError:
+    regex.test(proveedor)=== true ? null : 'Sólo se admiten letras, números y espacios'
+});
+}
 
-  validateMonto = () => {
-    const { monto } = this.state;
-    let regex = new RegExp("^[0-9]+$");
+handleMontoChange = (event) => {
+this.setState({ monto: event.target.value }, () => {
+  this.validateMonto();
+});
+}
 
-        this.setState({
-          montoError:
-            regex.test(monto) === true ? null : 'Sólo se admiten números enteros.'
-        });
-  }
-
-  handleMonedaChange = (event) => {
-    this.setState({ moneda: event.target.value }, () => {
-      this.validateMoneda();
-    });
-  };
-
-  validateMoneda = () => {
-    const { moneda } = this.state;
-    let regex = new RegExp("^[a-zA-Z]+$");
+validateMonto = () => {
+const { monto } = this.state;
+let regex = new RegExp("^[0-9]+$");
 
     this.setState({
-      monError:
-        regex.test(moneda) === true ? null : 'Sólo se admiten letras.'
+      montoError:
+        regex.test(monto) === true ? null : 'Sólo se admiten números enteros.'
     });
-  }
+}
 
-  handleMonedaChange = (event) => {
-    this.setState({ moneda: event.target.value }, () => {
-      this.validateMoneda();
-    });
-  };
+handleMonedaChange = (event) => {
+this.setState({ moneda: event.target.value }, () => {
+  this.validateMoneda();
+});
+};
 
-  validateMoneda = () => {
-    const { moneda } = this.state;
-    let regex = new RegExp("^[a-zA-Z]+$");
+validateMoneda = () => {
+const { moneda } = this.state;
+let regex = new RegExp("^[a-zA-Z]+$");
 
-    this.setState({
-      monError:
-        regex.test(moneda) === true ? null : 'Sólo se admiten letras.'
-    });
-  }
+this.setState({
+  monError:
+    regex.test(moneda) === true ? null : 'Sólo se admiten letras.'
+});
+}
 
-  handleCommentChange = (event) => {
-    this.setState({ comentario: event.target.value }, () => {
-      this.validateComment();
-    });
-  }
+handleMonedaChange = (event) => {
+this.setState({ moneda: event.target.value }, () => {
+  this.validateMoneda();
+});
+};
 
-  validateComment = () => {
-    const { comentario } = this.state;
-    let regex = new RegExp("^[a-zA-Z0-9., ]+$");
+validateMoneda = () => {
+const { moneda } = this.state;
+let regex = new RegExp("^[a-zA-Z]+$");
 
-    this.setState({
-      comError:
-        regex.test(comentario)=== true ? null : 'Sólo se admiten letras, números, espacios y signos de puntuación.'
-    });
-  }
+this.setState({
+  monError:
+    regex.test(moneda) === true ? null : 'Sólo se admiten letras.'
+});
+}
 
-  /*FIN VALIDACIONES*/
-    
+handleCommentChange = (event) => {
+this.setState({ comentario: event.target.value }, () => {
+  this.validateComment();
+});
+}
 
-    cargarDatos=()=>{
-        axios.get('http://201.132.203.2/ConsultarRecibos/').then(response=>{
-          this.setState({data: response.data});
-        }).catch(error=>{
-          console.log(error.message);
-        })
-    }
-    obtenerUltimoId=()=>{
-        axios.get('http://201.132.203.2/UltimoRecibo/').then(response=>{
-          this.setState({ultimo: response.data});
-        }).catch(error=>{
-          console.log(error.message);
-        })
-        }
-        
-    peticionPost=()=>{
-          fetch('http://201.132.203.2/RegistrarRecibo/',{
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer '+cookies.get('token')
-            },
-            body: JSON.stringify({"proveedor": this.state.proveedor, 
-                                  "monto": parseInt(this.state.monto,10), 
-                                  "moneda": this.state.moneda , 
-                                  "comentario": this.state.comentario}),
-            cache: 'no-cache'
-        })
-        .then(function(response) {
-            return response.json();
-            
-        })
-        .then(function(data) {
-            console.log('data = ', data);
-        })
-        .catch(function(err) {
-            console.error(err);
-        });
-        this.modalInsertar();
-        this.cargarDatos();
-    }
+validateComment = () => {
+const { comentario } = this.state;
+let regex = new RegExp("^[a-zA-Z0-9., ]+$");
 
-    peticionPut=()=>{
-        fetch('http://201.132.203.2/ActualizarRecibo/',{
-            method: 'PATCH',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer '+cookies.get('token')
-            },
-            body: JSON.stringify({"idRecibo":this.state.form.idRecibo,
-                                  "proveedor": this.state.form.proveedor, 
-                                  "monto": parseInt(this.state.form.monto,10), 
-                                  "moneda": this.state.form.moneda, 
-                                  "comentario": this.state.form.comentario}),
-            cache: 'no-cache'
-        })
-        .then(function(response) {
-            return response.json();
-            
-        })
-        .then(function(data) {
-            console.log('data = ', data);
-        })
-        .catch(function(err) {
-            console.error(err);
-        });
-        this.modalEditar();
-        this.cargarDatos();
-    }
+this.setState({
+  comError:
+    regex.test(comentario)=== true ? null : 'Sólo se admiten letras, números, espacios y signos de puntuación.'
+});
+}
 
-    peticionDelete=()=>{
-        axios.delete(
-            'http://201.132.203.2/BorrarRecibo/',
-            {
-                headers:{
-                    'Authorization': 'Bearer '+cookies.get('token')
-                },
-                data: {
-                idRecibo: this.state.form.idRecibo
-                }
-          }).then(response=>{
-            this.setState({modalEliminar: false});
-            this.cargarDatos();
-          });
-      }
-    
-    modalEditar=()=>{
-        this.setState({modalEditar: !this.state.modalEditar});
-      }
-      
-    seleccionarRecibo=(Recibo)=>{
-    this.setState({
-        tipoModal: 'actualizar',
-        form: {
-        idRecibo: Recibo.idRecibo,
-        proveedor: Recibo.proveedor,
-        monto: Recibo.monto,
-        moneda: Recibo.moneda,
-        comentario: Recibo.comentario
-        }
+/*FIN VALIDACIONES*/
+
+
+cargarDatos=()=>{
+    axios.get('http://201.132.203.2/ConsultarRecibos/').then(response=>{
+      this.setState({data: response.data});
+    }).catch(error=>{
+      console.log(error.message);
+    })
+}
+obtenerUltimoId=()=>{
+    axios.get('http://201.132.203.2/UltimoRecibo/').then(response=>{
+      this.setState({ultimo: response.data});
+    }).catch(error=>{
+      console.log(error.message);
     })
     }
     
-    handleChange=async e=>{
-    e.persist();
-    await this.setState({
-        form:{
-        ...this.state.form,
-        [e.target.name]: e.target.value
-        }
-    });
-    /*console.log(this.state.form);*/
-    }
-    
-    modalInsertar=()=>{
-      this.setState({modalInsertar: !this.state.modalInsertar});
-    }
-  
-    cerrarSesion=()=>{
-    cookies.remove('token', {path: "/"});
-      localStorage.removeItem('token');
-      window.location.href="./";
-  }
-     /*VALIDAR ACCION*/
-     validarPut=()=>{
-
-       if((this.state.proveedor === null) || (this.state.monto === null) || (this.state.moneda === null)||
-       (this.state.comentario === null) || (this.state.provError) || (this.state.montoError) || 
-       (this.state.monError) || (this.state.comError)){
+peticionPost=()=>{
+      fetch('http://201.132.203.2/RegistrarRecibo/',{
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer '+cookies.get('token')
+        },
+        body: JSON.stringify({"proveedor": this.state.proveedor, 
+                              "monto": parseInt(this.state.monto,10), 
+                              "moneda": this.state.moneda , 
+                              "comentario": this.state.comentario}),
+        cache: 'no-cache'
+    })
+    .then(function(response) {
+        return response.json();
         
-        this.modalVacios();
-            
-      }else{
-        this.peticionPut();
-        this.cargarDatos();
-      }
-    }
-    validarPost=()=>{
-      if((this.state.proveedor === null) || (this.state.monto === null) || (this.state.moneda === null)||
-      (this.state.comentario === null) || (this.state.provError) || (this.state.montoError) || 
-      (this.state.monError) || (this.state.comError)){
-            this.modalVacios();
-      }else{
-        this.peticionPost();
-        this.cargarDatos();
-      }
-    }
-    cancelarPost=()=>{
-      this.setState({
-        proveedor: null,
-        monto: null,
-        moneda: null,
-        comentario: null,
-        provError: null,
-        montoError: null,
-        monError: null,
-        comError: null,
-        form:{
-          proveedor: null,
-          monto: null,
-          moneda: null,
-          comentario: null
-        }
-      })
-      this.modalInsertar();
-    }
-    cancelarPut=()=>{
-      this.setState({
-        proveedor: null,
-        monto: null,
-        moneda: null,
-        comentario: null,
-        provError: null,
-        montoError: null,
-        monError: null,
-        comError: null,
-        form:{
-          proveedor: null,
-          monto: null,
-          moneda: null,
-          comentario: null
-        }
-      })
-      this.modalEditar();
-    }
-    /*modal para error de campos vacios*/
-    modalVacios=()=>{
-      this.setState({modalVacios: !this.state.modalVacios});
-    }
+    })
+    .then(function(data) {
+        console.log('data = ', data);
+    })
+    .catch(function(err) {
+        console.error(err);
+    });
+    this.modalInsertar();
+    this.cargarDatos();
+}
 
-    componentDidMount(){
-      this.cargarDatos();
-      this.obtenerUltimoId();
+peticionPut=()=>{
+    fetch('http://201.132.203.2/ActualizarRecibo/',{
+        method: 'PATCH',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer '+cookies.get('token')
+        },
+        body: JSON.stringify({"idRecibo":this.state.form.idRecibo,
+                              "proveedor": this.state.form.proveedor, 
+                              "monto": parseInt(this.state.form.monto,10), 
+                              "moneda": this.state.form.moneda, 
+                              "comentario": this.state.form.comentario}),
+        cache: 'no-cache'
+    })
+    .then(function(response) {
+        return response.json();
+        
+    })
+    .then(function(data) {
+        console.log('data = ', data);
+    })
+    .catch(function(err) {
+        console.error(err);
+    });
+    this.modalEditar();
+    this.cargarDatos();
+}
+
+peticionDelete=()=>{
+    axios.delete(
+        'http://201.132.203.2/BorrarRecibo/',
+        {
+            headers:{
+                'Authorization': 'Bearer '+cookies.get('token')
+            },
+            data: {
+            idRecibo: this.state.form.idRecibo
+            }
+      }).then(response=>{
+        this.setState({modalEliminar: false});
+        this.cargarDatos();
+      });
   }
+
+modalEditar=()=>{
+    this.setState({modalEditar: !this.state.modalEditar});
+  }
+  
+seleccionarRecibo=(Recibo)=>{
+this.setState({
+    tipoModal: 'actualizar',
+    form: {
+    idRecibo: Recibo.idRecibo,
+    proveedor: Recibo.proveedor,
+    monto: Recibo.monto,
+    moneda: Recibo.moneda,
+    comentario: Recibo.comentario
+    }
+})
+}
+
+handleChange=async e=>{
+e.persist();
+await this.setState({
+    form:{
+    ...this.state.form,
+    [e.target.name]: e.target.value
+    }
+});
+/*console.log(this.state.form);*/
+}
+
+modalInsertar=()=>{
+  this.setState({modalInsertar: !this.state.modalInsertar});
+}
+
+cerrarSesion=()=>{
+cookies.remove('token', {path: "/"});
+  localStorage.removeItem('token');
+  window.location.href="./";
+}
+ /*VALIDAR ACCION*/
+ validarPut=()=>{
+
+   if((this.state.proveedor === null) || (this.state.monto === null) || (this.state.moneda === null)||
+   (this.state.comentario === null) || (this.state.provError) || (this.state.montoError) || 
+   (this.state.monError) || (this.state.comError)){
+    
+    this.modalVacios();
+        
+  }else{
+    this.peticionPut();
+    this.cargarDatos();
+  }
+}
+validarPost=()=>{
+  if((this.state.proveedor === null) || (this.state.monto === null) || (this.state.moneda === null)||
+  (this.state.comentario === null) || (this.state.provError) || (this.state.montoError) || 
+  (this.state.monError) || (this.state.comError)){
+        this.modalVacios();
+  }else{
+    this.peticionPost();
+    this.cargarDatos();
+  }
+}
+cancelarPost=()=>{
+  this.setState({
+    proveedor: null,
+    monto: null,
+    moneda: null,
+    comentario: null,
+    provError: null,
+    montoError: null,
+    monError: null,
+    comError: null,
+    form:{
+      proveedor: null,
+      monto: null,
+      moneda: null,
+      comentario: null
+    }
+  })
+  this.modalInsertar();
+}
+cancelarPut=()=>{
+  this.setState({
+    proveedor: null,
+    monto: null,
+    moneda: null,
+    comentario: null,
+    provError: null,
+    montoError: null,
+    monError: null,
+    comError: null,
+    form:{
+      proveedor: null,
+      monto: null,
+      moneda: null,
+      comentario: null
+    }
+  })
+  this.modalEditar();
+}
+/*modal para error de campos vacios*/
+modalVacios=()=>{
+  this.setState({modalVacios: !this.state.modalVacios});
+}
+componentDidMount(){
+  this.cargarDatos();
+  this.obtenerUltimoId();
+}
     render() {
         const {form}=this.state;
         return (
@@ -463,6 +462,16 @@ class ViewTablas extends Component {
                       <button className="btn btn-danger font-weight-bold" onClick={()=>this.cancelarPut()}>Cancelar</button>
                 </ModalFooter>
                 </Modal>
+
+                <Modal isOpen={this.state.modalEliminar}>
+                <ModalBody>
+                ¿Está seguro que deseas eliminar el recibo no. {form && form.idRecibo}?
+                </ModalBody>
+                <ModalFooter>
+                <button className="btn btn-danger" onClick={()=>this.peticionDelete()}>Sí</button>
+                <button className="btn btn-secundary" onClick={()=>this.setState({modalEliminar: false})}>No</button>
+                </ModalFooter>
+            </Modal>
 
             <Modal isOpen={this.state.modalVacios}>
                 <ModalHeader style={{display: 'block'}}>
