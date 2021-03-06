@@ -399,7 +399,7 @@ componentDidMount(){
                           </div>
                           <div className="col-4">
                             <label htmlFor="moneda">Moneda:</label>
-                            <input className={`form-control ${this.state.monError ? 'is-invalid' : ''}`} type="text" name="moneda" id="moneda"  onChange={this.handleChange} onBlur={this.handleMonChange} value={form?form.moneda:''}/>
+                            <input className={`form-control ${this.state.monError ? 'is-invalid' : ''}`} type="text" name="moneda" id="moneda"  onChange={this.handleChange} onBlur={this.handleMonedaChange} value={form?form.moneda:''}/>
                             <small className="text-danger">{this.state.monError}</small>
                           </div>
                         </div>
@@ -444,7 +444,7 @@ componentDidMount(){
                           </div>
                           <div className="col-4">
                             <label htmlFor="moneda">Moneda:</label>
-                            <input className={`form-control ${this.state.monError ? 'is-invalid' : ''}`} type="text" name="moneda" id="moneda"  onChange={this.handleChange} onBlur={this.handleMonChange} value={form?form.moneda:''}/>
+                            <input className={`form-control ${this.state.monError ? 'is-invalid' : ''}`} type="text" name="moneda" id="moneda"  onChange={this.handleChange} onBlur={this.handleMonedaChange} value={form?form.moneda:''}/>
                             <small className="text-danger">{this.state.monError}</small>
                           </div>
                         </div>
