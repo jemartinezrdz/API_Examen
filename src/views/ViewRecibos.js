@@ -170,7 +170,7 @@ class ViewRecibos extends Component {
             },
             body: JSON.stringify({"idRecibo":this.state.form.idRecibo,
                                   "proveedor": this.state.form.proveedor, 
-                                  "monto": this.state.form.monto, 
+                                  "monto": parseInt(this.state.form.monto,10), 
                                   "moneda": this.state.form.moneda, 
                                   "comentario": this.state.form.comentario}),
             cache: 'no-cache'
