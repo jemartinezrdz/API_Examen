@@ -39,7 +39,11 @@ class ViewTablas extends Component {
   }
 
 cerrarSesion=()=>{
-  cookies.remove('token');
+  cerrarSesion=()=>{
+  cookies.remove('token', {path: "/"});
+    localStorage.removeItem('token');
+    window.location.href="./";
+}
     localStorage.removeItem('token');
     window.location.href="./";
 }
