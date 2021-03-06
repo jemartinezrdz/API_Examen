@@ -5,15 +5,9 @@ import * as IoIcons from 'react-icons/io';
 
 export const SidebarData = [
   {
-    title: 'Versión Tabla',
+    title: 'Inicio',
     path: '/home',
     icon: <AiIcons.AiFillHome />,
-    cName: 'nav-text'
-  },
-  {
-    title: 'Versión Recibos',
-    path: '/recibos',
-    icon: <FaIcons.FaMoneyBillAlt />,
     cName: 'nav-text'
   }
 ];
