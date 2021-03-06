@@ -36,11 +36,8 @@ class ViewTablas extends Component {
   }
   
   /* VALIDACIONES */
-  handleProvChange = event => {
-    this.setState({form:{
-      ...this.state.form
-      },proveedor: event.target.value }, () => {
-      
+  handleProvChange = (event) => {
+    this.setState({proveedor: event.target.value }, () => {
       this.validateProv();
     });
   }
@@ -50,16 +47,13 @@ class ViewTablas extends Component {
     let regex = new RegExp("^[a-zA-Z0-9 ]+$");
 
     this.setState({
-      
       provError:
         regex.test(proveedor)=== true ? null : 'Sólo se admiten letras, números y espacios'
     });
   }
 
-  handleMontoChange = event => {
-    this.setState({ form:{
-      ...this.state.form
-      },monto: event.target.value }, () => {
+  handleMontoChange = (event) => {
+    this.setState({ monto: event.target.value }, () => {
       this.validateMonto();
     });
   }
@@ -74,10 +68,8 @@ class ViewTablas extends Component {
         });
   }
 
-  handleMonedaChange = event => {
-    this.setState({ form:{
-      ...this.state.form
-      },moneda: event.target.value }, () => {
+  handleMonedaChange = (event) => {
+    this.setState({ moneda: event.target.value }, () => {
       this.validateMoneda();
     });
   };
@@ -92,11 +84,24 @@ class ViewTablas extends Component {
     });
   }
 
+  handleMonedaChange = (event) => {
+    this.setState({ moneda: event.target.value }, () => {
+      this.validateMoneda();
+    });
+  };
 
-  handleCommentChange = event => {
-    this.setState({ form:{
-      ...this.state.form
-      },comentario: event.target.value }, () => {
+  validateMoneda = () => {
+    const { moneda } = this.state;
+    let regex = new RegExp("^[a-zA-Z]+$");
+
+    this.setState({
+      monError:
+        regex.test(moneda) === true ? null : 'Sólo se admiten letras.'
+    });
+  }
+
+  handleCommentChange = (event) => {
+    this.setState({ comentario: event.target.value }, () => {
       this.validateComment();
     });
   }
@@ -106,9 +111,6 @@ class ViewTablas extends Component {
     let regex = new RegExp("^[a-zA-Z0-9., ]+$");
 
     this.setState({
-      form:{
-        ...this.state.form
-        },
       comError:
         regex.test(comentario)=== true ? null : 'Sólo se admiten letras, números, espacios y signos de puntuación.'
     });
@@ -125,38 +127,40 @@ class ViewTablas extends Component {
         })
     }
     obtenerUltimoId=()=>{
-      axios.get('http://201.132.203.2/UltimoRecibo/').then(response=>{
-        this.setState({ultimo: response.data});
-      }).catch(error=>{
-        console.log(error.message);
-      })
-      }
-    peticionPost=()=>{
-      fetch('http://201.132.203.2/RegistrarRecibo/',{
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer '+cookies.get('token')
-        },
-        body: JSON.stringify({"proveedor": this.state.proveedor, 
-                              "monto": parseInt(this.state.monto,10), 
-                              "moneda": this.state.moneda , 
-                              "comentario": this.state.comentario}),
-        cache: 'no-cache'
-    })
-    .then(function(response) {
-        return response.json();
+        axios.get('http://201.132.203.2/UltimoRecibo/').then(response=>{
+          this.setState({ultimo: response.data});
+        }).catch(error=>{
+          console.log(error.message);
+        })
+        }
         
-    })
-    .then(function(data) {
-        console.log('data = ', data);
-    })
-    .catch(function(err) {
-        console.error(err);
-    });
-    this.modalInsertar();
-    this.cargarDatos();
-}
+    peticionPost=()=>{
+          fetch('http://201.132.203.2/RegistrarRecibo/',{
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer '+cookies.get('token')
+            },
+            body: JSON.stringify({"proveedor": this.state.proveedor, 
+                                  "monto": parseInt(this.state.monto,10), 
+                                  "moneda": this.state.moneda , 
+                                  "comentario": this.state.comentario}),
+            cache: 'no-cache'
+        })
+        .then(function(response) {
+            return response.json();
+            
+        })
+        .then(function(data) {
+            console.log('data = ', data);
+        })
+        .catch(function(err) {
+            console.error(err);
+        });
+        this.modalInsertar();
+        this.cargarDatos();
+    }
+
     peticionPut=()=>{
         fetch('http://201.132.203.2/ActualizarRecibo/',{
             method: 'PATCH',
@@ -164,11 +168,11 @@ class ViewTablas extends Component {
                 'Content-Type': 'application/json',
                 'Authorization': 'Bearer '+cookies.get('token')
             },
-            body: JSON.stringify({"idRecibo":this.state.idRecibo,
-                                  "proveedor": this.state.proveedor, 
-                                  "monto": this.state.monto, 
-                                  "moneda": this.state.moneda, 
-                                  "comentario": this.state.comentario}),
+            body: JSON.stringify({"idRecibo":this.state.form.idRecibo,
+                                  "proveedor": this.state.form.proveedor, 
+                                  "monto": this.state.form.monto, 
+                                  "moneda": this.state.form.moneda, 
+                                  "comentario": this.state.form.comentario}),
             cache: 'no-cache'
         })
         .then(function(response) {
@@ -226,9 +230,9 @@ class ViewTablas extends Component {
         [e.target.name]: e.target.value
         }
     });
-    console.log(this.state.form);
+    /*console.log(this.state.form);*/
     }
-
+    
     modalInsertar=()=>{
       this.setState({modalInsertar: !this.state.modalInsertar});
     }
@@ -238,30 +242,30 @@ class ViewTablas extends Component {
       localStorage.removeItem('token');
       window.location.href="./";
   }
-   /*VALIDAR ACCION*/
-   validarPut=()=>{
+     /*VALIDAR ACCION*/
+     validarPut=()=>{
 
-    if((this.state.proveedor === null) || (this.state.monto === null) || (this.state.moneda === null)||
-    (this.state.comentario === null) || (this.state.provError) || (this.state.montoError) || 
-    (this.state.monError) || (this.state.comError)){
-     
-     this.modalVacios();
-         
-   }else{
-     this.peticionPut();
-     this.cargarDatos();
-   }
- }
- validarPost=()=>{
-   if((this.state.proveedor === null) || (this.state.monto === null) || (this.state.moneda === null)||
-   (this.state.comentario === null) || (this.state.provError) || (this.state.montoError) || 
-   (this.state.monError) || (this.state.comError)){
-         this.modalVacios();
-   }else{
-     this.peticionPost();
-     this.cargarDatos();
-   }
- }
+       if((this.state.proveedor === null) || (this.state.monto === null) || (this.state.moneda === null)||
+       (this.state.comentario === null) || (this.state.provError) || (this.state.montoError) || 
+       (this.state.monError) || (this.state.comError)){
+        
+        this.modalVacios();
+            
+      }else{
+        this.peticionPut();
+        this.cargarDatos();
+      }
+    }
+    validarPost=()=>{
+      if((this.state.proveedor === null) || (this.state.monto === null) || (this.state.moneda === null)||
+      (this.state.comentario === null) || (this.state.provError) || (this.state.montoError) || 
+      (this.state.monError) || (this.state.comError)){
+            this.modalVacios();
+      }else{
+        this.peticionPost();
+        this.cargarDatos();
+      }
+    }
     cancelarPost=()=>{
       this.setState({
         proveedor: null,
@@ -459,16 +463,6 @@ class ViewTablas extends Component {
                       <button className="btn btn-danger font-weight-bold" onClick={()=>this.cancelarPut()}>Cancelar</button>
                 </ModalFooter>
                 </Modal>
-
-                <Modal isOpen={this.state.modalEliminar}>
-                <ModalBody>
-                ¿Está seguro que deseas eliminar el recibo no. {form && form.idRecibo}?
-                </ModalBody>
-                <ModalFooter>
-                <button className="btn btn-danger" onClick={()=>this.peticionDelete()}>Sí</button>
-                <button className="btn btn-secundary" onClick={()=>this.setState({modalEliminar: false})}>No</button>
-                </ModalFooter>
-            </Modal>
 
             <Modal isOpen={this.state.modalVacios}>
                 <ModalHeader style={{display: 'block'}}>
