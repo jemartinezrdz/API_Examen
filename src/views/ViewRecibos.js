@@ -39,7 +39,7 @@ class ViewRecibos extends Component {
   }
 
 cerrarSesion=()=>{
-  cookies.remove('token');
+  cookies.remove('token', {path: "/"});
     localStorage.removeItem('token');
     window.location.href="./";
 }
