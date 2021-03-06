@@ -34,41 +34,13 @@ class ViewTablas extends Component {
     monError: '',
     comError: ''
   }
-  modalInsertar=()=>{
-    this.setState({modalInsertar: !this.state.modalInsertar});
-  }
-
-cerrarSesion=()=>{
-  cerrarSesion=()=>{
-  cookies.remove('token', {path: "/"});
-    localStorage.removeItem('token');
-    window.location.href="./";
-}
-    localStorage.removeItem('token');
-    window.location.href="./";
-}
-  /*VALIDAR ACCION*/
-  validarPut=()=>{
-    if(this.state.form !== "" || this.state.provError === "" || this.state.montoError === "" || this.state.monError === "" || this.state.comError === ""){
-          this.peticionPostt();
-    }else{
-      this.modalVacios();
-    }
-  }
-  validarPost=()=>{
-    if(this.state.form !== "" || this.state.provError === "" || this.state.montoError === "" || this.state.monError === "" || this.state.comError === ""){
-          this.peticionPut();
-    }else{
-      this.modalVacios();
-    }
-  }
-  /*modal para error de campos vacios*/
-  modalVacios=()=>{
-    this.setState({modalVacios: !this.state.modalVacios});
-  }
+  
   /* VALIDACIONES */
-  handleProvChange = (event) => {
-    this.setState({proveedor: event.target.value }, () => {
+  handleProvChange = event => {
+    this.setState({form:{
+      ...this.state.form
+      },proveedor: event.target.value }, () => {
+      
       this.validateProv();
     });
   }
@@ -78,13 +50,16 @@ cerrarSesion=()=>{
     let regex = new RegExp("^[a-zA-Z0-9 ]+$");
 
     this.setState({
+      
       provError:
         regex.test(proveedor)=== true ? null : 'Sólo se admiten letras, números y espacios'
     });
   }
 
-  handleMontoChange = (event) => {
-    this.setState({ monto: event.target.value }, () => {
+  handleMontoChange = event => {
+    this.setState({ form:{
+      ...this.state.form
+      },monto: event.target.value }, () => {
       this.validateMonto();
     });
   }
@@ -99,8 +74,10 @@ cerrarSesion=()=>{
         });
   }
 
-  handleMonedaChange = (event) => {
-    this.setState({ moneda: event.target.value }, () => {
+  handleMonedaChange = event => {
+    this.setState({ form:{
+      ...this.state.form
+      },moneda: event.target.value }, () => {
       this.validateMoneda();
     });
   };
@@ -115,24 +92,11 @@ cerrarSesion=()=>{
     });
   }
 
-  handleMonedaChange = (event) => {
-    this.setState({ moneda: event.target.value }, () => {
-      this.validateMoneda();
-    });
-  };
 
-  validateMoneda = () => {
-    const { moneda } = this.state;
-    let regex = new RegExp("^[a-zA-Z]+$");
-
-    this.setState({
-      monError:
-        regex.test(moneda) === true ? null : 'Sólo se admiten letras.'
-    });
-  }
-
-  handleCommentChange = (event) => {
-    this.setState({ comentario: event.target.value }, () => {
+  handleCommentChange = event => {
+    this.setState({ form:{
+      ...this.state.form
+      },comentario: event.target.value }, () => {
       this.validateComment();
     });
   }
@@ -142,15 +106,16 @@ cerrarSesion=()=>{
     let regex = new RegExp("^[a-zA-Z0-9., ]+$");
 
     this.setState({
+      form:{
+        ...this.state.form
+        },
       comError:
         regex.test(comentario)=== true ? null : 'Sólo se admiten letras, números, espacios y signos de puntuación.'
     });
   }
 
   /*FIN VALIDACIONES*/
-    componentDidMount(){
-        this.cargarDatos();
-    }
+    
 
     cargarDatos=()=>{
         axios.get('http://201.132.203.2/ConsultarRecibos/').then(response=>{
@@ -159,7 +124,39 @@ cerrarSesion=()=>{
           console.log(error.message);
         })
     }
-
+    obtenerUltimoId=()=>{
+      axios.get('http://201.132.203.2/UltimoRecibo/').then(response=>{
+        this.setState({ultimo: response.data});
+      }).catch(error=>{
+        console.log(error.message);
+      })
+      }
+    peticionPost=()=>{
+      fetch('http://201.132.203.2/RegistrarRecibo/',{
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer '+cookies.get('token')
+        },
+        body: JSON.stringify({"proveedor": this.state.proveedor, 
+                              "monto": parseInt(this.state.monto,10), 
+                              "moneda": this.state.moneda , 
+                              "comentario": this.state.comentario}),
+        cache: 'no-cache'
+    })
+    .then(function(response) {
+        return response.json();
+        
+    })
+    .then(function(data) {
+        console.log('data = ', data);
+    })
+    .catch(function(err) {
+        console.error(err);
+    });
+    this.modalInsertar();
+    this.cargarDatos();
+}
     peticionPut=()=>{
         fetch('http://201.132.203.2/ActualizarRecibo/',{
             method: 'PATCH',
@@ -167,11 +164,11 @@ cerrarSesion=()=>{
                 'Content-Type': 'application/json',
                 'Authorization': 'Bearer '+cookies.get('token')
             },
-            body: JSON.stringify({"idRecibo":this.state.form.idRecibo,
-                                  "proveedor": this.state.form.proveedor, 
-                                  "monto": this.state.form.monto, 
-                                  "moneda": this.state.form.moneda, 
-                                  "comentario": this.state.form.comentario}),
+            body: JSON.stringify({"idRecibo":this.state.idRecibo,
+                                  "proveedor": this.state.proveedor, 
+                                  "monto": this.state.monto, 
+                                  "moneda": this.state.moneda, 
+                                  "comentario": this.state.comentario}),
             cache: 'no-cache'
         })
         .then(function(response) {
@@ -231,6 +228,87 @@ cerrarSesion=()=>{
     });
     console.log(this.state.form);
     }
+
+    modalInsertar=()=>{
+      this.setState({modalInsertar: !this.state.modalInsertar});
+    }
+  
+    cerrarSesion=()=>{
+    cookies.remove('token', {path: "/"});
+      localStorage.removeItem('token');
+      window.location.href="./";
+  }
+   /*VALIDAR ACCION*/
+   validarPut=()=>{
+
+    if((this.state.proveedor === null) || (this.state.monto === null) || (this.state.moneda === null)||
+    (this.state.comentario === null) || (this.state.provError) || (this.state.montoError) || 
+    (this.state.monError) || (this.state.comError)){
+     
+     this.modalVacios();
+         
+   }else{
+     this.peticionPut();
+     this.cargarDatos();
+   }
+ }
+ validarPost=()=>{
+   if((this.state.proveedor === null) || (this.state.monto === null) || (this.state.moneda === null)||
+   (this.state.comentario === null) || (this.state.provError) || (this.state.montoError) || 
+   (this.state.monError) || (this.state.comError)){
+         this.modalVacios();
+   }else{
+     this.peticionPost();
+     this.cargarDatos();
+   }
+ }
+    cancelarPost=()=>{
+      this.setState({
+        proveedor: null,
+        monto: null,
+        moneda: null,
+        comentario: null,
+        provError: null,
+        montoError: null,
+        monError: null,
+        comError: null,
+        form:{
+          proveedor: null,
+          monto: null,
+          moneda: null,
+          comentario: null
+        }
+      })
+      this.modalInsertar();
+    }
+    cancelarPut=()=>{
+      this.setState({
+        proveedor: null,
+        monto: null,
+        moneda: null,
+        comentario: null,
+        provError: null,
+        montoError: null,
+        monError: null,
+        comError: null,
+        form:{
+          proveedor: null,
+          monto: null,
+          moneda: null,
+          comentario: null
+        }
+      })
+      this.modalEditar();
+    }
+    /*modal para error de campos vacios*/
+    modalVacios=()=>{
+      this.setState({modalVacios: !this.state.modalVacios});
+    }
+
+    componentDidMount(){
+      this.cargarDatos();
+      this.obtenerUltimoId();
+  }
     render() {
         const {form}=this.state;
         return (
@@ -297,36 +375,44 @@ cerrarSesion=()=>{
                   <ModalBody>
                     
                       <div className="form-group">
-                        
-                        <label htmlFor="proveedor">Proveedor:</label>
-                        <input className="form-control" type="text" name="proveedor" id="proveedor" onChange={this.handleProvChange} value={this.state.proveedor}/>
+                      
+                      <label htmlFor="idRecibo">No. nuevo recibo:</label>   
+                      {this.state.ultimo.map(Recibo=>{
+                                return(
+                                  <input className="form-control col-4" type="text" name="idRecibo" id="idRecibo" onChange={this.handleChange} readOnly value={Recibo.idRecibo} />   
+                                )
+                            }
+                            )}
+                        <br />
+                      <label htmlFor="proveedor">Proveedor:</label>
+                        <input className={`form-control ${this.state.provError ? 'is-invalid' : ''}`} type="text" name="proveedor" id="proveedor" onChange={this.handleChange} onBlur={this.handleProvChange}  value={form?form.proveedor:''}/>
                         <small className="text-danger">{this.state.provError}</small>
                         <br />
                         <div className="row">
                           <div className="col-8">
                             <label htmlFor="monto">Monto:</label>
-                            <input className="form-control" type="text" name="monto" id="monto" onChange={this.handleMontoChange} value={this.state.monto} />
+                            <input className={`form-control ${this.state.montoError ? 'is-invalid' : ''}`} type="text" name="monto" id="monto" onChange={this.handleChange} onBlur={this.handleMontoChange}  value={form?form.monto:''} />
                             <small className="text-danger">{this.state.montoError}</small>
                           </div>
                           <div className="col-4">
                             <label htmlFor="moneda">Moneda:</label>
-                            <input className="form-control" type="text" name="moneda" id="moneda"  onChange={this.handleMonedaChange} value={this.state.moneda}/>
+                            <input className={`form-control ${this.state.monError ? 'is-invalid' : ''}`} type="text" name="moneda" id="moneda"  onChange={this.handleChange} onBlur={this.handleMonChange} value={form?form.moneda:''}/>
                             <small className="text-danger">{this.state.monError}</small>
                           </div>
                         </div>
                         <br />
                         
                         <label htmlFor="comentario">Comentario:</label>
-                        <input className="form-control" type="text" name="comentario" id="comentario" onChange={this.handleCommentChange} value={this.state.comentario}/>
+                        <input className={`form-control ${this.state.comError ? 'is-invalid' : ''}`} type="text" name="comentario" id="comentario" onChange={this.handleChange} onBlur={this.handleCommentChange}  value={form?form.comentario:''}/>
                         <small className="text-danger">{this.state.comError}</small>
                       </div>
                       
                 </ModalBody>
                 <ModalFooter>
-                <button className="btn btn-success font-weight-bold" onClick={()=>this.peticionPost()} >
+                <button className="btn btn-success font-weight-bold" onClick={()=>this.validarPost()} >
                           Agregar
                       </button>&nbsp;
-                      <button className="btn btn-danger font-weight-bold" onClick={()=>this.modalInsertar()}>Cancelar</button>
+                      <button className="btn btn-danger font-weight-bold" onClick={()=>this.cancelarPost()}>Cancelar</button>
                 </ModalFooter>
                 </Modal>         
 
@@ -343,34 +429,34 @@ cerrarSesion=()=>{
                     </ModalHeader>
                     <ModalBody>
                       <div className="form-group">
-                        <label htmlFor="proveedor">Proveedor:</label>
-                        <input className="form-control text-uppercase ${this.state.provError ? 'is-invalid' : ''}" type="text" name="proveedor" id="proveedor" onChange={this.handleChange} value={form?form.proveedor: ''}/>
+                      <label htmlFor="proveedor">Proveedor:</label>
+                        <input className={`form-control ${this.state.provError ? 'is-invalid' : ''}`} type="text" name="proveedor" id="proveedor" onChange={this.handleChange} onBlur={this.handleProvChange}  value={form?form.proveedor:''}/>
                         <small className="text-danger">{this.state.provError}</small>
                         <br />
                         <div className="row">
                           <div className="col-8">
                             <label htmlFor="monto">Monto:</label>
-                            <input className="form-control ${this.state.montoError ? 'is-invalid' : ''}" type="text" name="monto" id="monto" onChange={this.handleChange} value={form?form.monto: ''} />
+                            <input className={`form-control ${this.state.montoError ? 'is-invalid' : ''}`} type="text" name="monto" id="monto" onChange={this.handleChange} onBlur={this.handleMontoChange}  value={form?form.monto:''} />
                             <small className="text-danger">{this.state.montoError}</small>
                           </div>
                           <div className="col-4">
                             <label htmlFor="moneda">Moneda:</label>
-                            <input className="form-control text-uppercase ${this.state.monError ? 'is-invalid' : ''}" type="text" name="moneda" id="moneda"  onChange={this.handleChange} value={form?form.moneda: ''}/>
+                            <input className={`form-control ${this.state.monError ? 'is-invalid' : ''}`} type="text" name="moneda" id="moneda"  onChange={this.handleChange} onBlur={this.handleMonChange} value={form?form.moneda:''}/>
                             <small className="text-danger">{this.state.monError}</small>
                           </div>
                         </div>
                         <br />
                         
                         <label htmlFor="comentario">Comentario:</label>
-                        <input className="form-control text-uppercase ${this.state.comError ? 'is-invalid' : ''}" type="text" name="comentario" id="comentario" onChange={this.handleChange} value={form?form.comentario: ''}/>
+                        <input className={`form-control ${this.state.comError ? 'is-invalid' : ''}`} type="text" name="comentario" id="comentario" onChange={this.handleChange} onBlur={this.handleCommentChange}  value={form?form.comentario:''}/>
                         <small className="text-danger">{this.state.comError}</small>
                       </div>
                 </ModalBody>
                 <ModalFooter>
-                <button className="btn btn-success font-weight-bold" onClick={()=>this.peticionPut()} >
+                <button className="btn btn-success font-weight-bold" onClick={()=>this.validarPut()} >
                           Guardar cambios
                       </button>&nbsp;
-                      <button className="btn btn-danger font-weight-bold" onClick={()=>this.modalInsertar()}>Cancelar</button>
+                      <button className="btn btn-danger font-weight-bold" onClick={()=>this.cancelarPut()}>Cancelar</button>
                 </ModalFooter>
                 </Modal>
 
@@ -386,10 +472,10 @@ cerrarSesion=()=>{
 
             <Modal isOpen={this.state.modalVacios}>
                 <ModalHeader style={{display: 'block'}}>
-                  <span>Error al iniciar sesi&oacute;n</span><span style={{float: 'right'}} onClick={()=>this.modalVacios()}>x</span>
+                  <span>Error</span><span style={{float: 'right'}} onClick={()=>this.modalVacios()}>x</span>
                 </ModalHeader>
                 <ModalBody>
-                  <span>Los campos están vac&iacute;s o tienen datos incorrectos.</span>
+                  <span>Los campos están vac&iacute;os o tienen datos incorrectos.</span>
                 </ModalBody>
                 <ModalFooter>
                             <button className="btn btn-dark" onClick={()=>this.modalVacios()}>Aceptar</button>

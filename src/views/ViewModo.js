@@ -5,7 +5,7 @@ import ViewTablas from '../views/ViewTablas';
 import ViewRecibos from '../views/ViewRecibos';
 
 export default function ViewModo(){
-    const [active, setActive] = useState("Tabla");
+    const [active, setActive] = useState("Recibo");
     
     return(
         <>
