@@ -4,6 +4,7 @@ import '../css/Login.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Modal, ModalBody, ModalFooter, ModalHeader } from 'reactstrap';
 import Cookies from 'universal-cookie';
+import axios from 'axios';
 
 /*cookies*/
 const cookies = new Cookies();
@@ -29,39 +30,50 @@ class Login extends Component {
         /*console.log(this.state.form);*/
     }
     
+    datosCorrectos=()=>{
+        fetch('http://201.132.203.2/login',{
+                method: 'POST',
+                headers: {
+                'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({"usuario": this.state.form.username, "contrasena": this.state.form.password}),
+                cache: 'no-cache'
+            })
+            .then(function(response) {
+                return response.json();
+            })
+            .then(function(data) {
+                
+                console.log('data = ', data);
+                    cookies.set('token',data.token, {path:"/"});
+                    console.log('Token generado:=> '+cookies.get('token'));
+                    localStorage.setItem('token',cookies.get('token'));
+                    
+            })
+            .catch(function(err) {
+                console.error(err);
+                
+            });
+     };
+        
+    
+
     iniciarSesion=()=>{
         
-        fetch('http://201.132.203.2/login',{
-            method: 'POST',
-            headers: {
-               'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({"usuario": this.state.form.username, "contrasena": this.state.form.password}),
-            cache: 'no-cache'
-           })
-           .then(function(response) {
-            return response.json();
-        })
-        .then(function(data) {
-            
-            console.log('data = ', data);
-                cookies.set('token',data.token, {path:"/"});
-                console.log('Token generado:=> '+cookies.get('token'));
-                localStorage.setItem('token',cookies.get('token'));
-                window.location.href="./home";
-        })
-        .catch(function(err) {
-            console.error(err);
-            
-        });
         if(this.state.form.username==="" || this.state.form.password ===""){
             this.modalVacios();
 
         }else{
+            this.datosCorrectos();
             if(!localStorage.getItem('token')){
                 this.modalError();
+            }else{
+                window.location.href="./home";
             }
         }
+
+        
+        
     }
     modalError=()=>{
         this.setState({modalError: !this.state.modalError});
