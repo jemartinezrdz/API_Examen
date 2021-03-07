@@ -5,29 +5,29 @@ import ViewTablas from '../views/ViewTablas';
 import ViewRecibos from '../views/ViewRecibos';
 
 export default function ViewModo(){
-    const [active, setActive] = useState("Recibo");
+    const [active, setActive] = useState("Tabla");
     
     return(
         <>
             <div className='container-home'>
-                    <div className='container-child-home'>
-                        <div className="container">
-                                <div className="container-superior-der">
-                                    <span>Cambiar vista</span>   
-                                    <a className="btn btn-link cuadricula" onClick={() => setActive("Recibo")}>
-                                        <i className="fas fa-th-large"></i>
-                                    </a>
-                                    <a className="btn btn-link tabla" onClick={() => setActive("Tabla")}>
-                                        <i className="fas fa-th-list"></i>
-                                    </a>
-                                </div> 
+                <div className='container-child-home'>
+                    <div className="container">
+                        <div className="container-superior-der">
+                            <span>Cambiar vista</span>   
+                            <a className="btn btn-link cuadricula" onClick={() => setActive("Recibo")}>
+                                <i className="fas fa-th-large"></i>
+                            </a>
+                            <a className="btn btn-link tabla" onClick={() => setActive("Tabla")}>
+                                <i className="fas fa-th-list"></i>
+                            </a>
                         </div>
                     </div>
                     <br/>
-                    
+
+                    {active === "Recibo" && <ViewRecibos />}
+                    {active === "Tabla" && <ViewTablas />}
                 </div>
-                {active === "Tabla" && <ViewTablas/>};
-                    {active === "Recibo" && <ViewRecibos/>};
+            </div>
             
         </>
     )
