@@ -1,8 +1,8 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap');
 
 
-html, body{
-    background-color:#02a0f0;
+html{
+    background-color: #02a0f0;
 }
 .containerPrincipal{
     position: absolute;
@@ -13,7 +13,6 @@ html, body{
     border-radius: 8px;
     box-shadow: 12px 12px 150px #1adadd;
     padding: 40px;
-    background-color: white;
     font-family: 'Roboto', sans-serif;
 }
 .containerSecundario label{
