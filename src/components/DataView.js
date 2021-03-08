@@ -161,6 +161,24 @@ peticionPost=()=>{
 }
 
 peticionPut=()=>{
+  /*
+  axios.patch('http://201.132.203.2/ActualizarRecibo/',
+  {
+    headers:{
+        'Authorization': 'Bearer '+cookies.get('token')
+    },
+    data: {
+    idRecibo: this.state.form.idRecibo,
+    proveedor: this.state.form.proveedor,
+    monto: parseFloat(this.state.form.monto),
+    moneda: this.state.form.moneda,
+    comentario: this.state.form.comentario
+    }
+    }).then(response=>{
+    this.setState({modalEliminar: false});
+    this.cargarDatos();
+    });*/
+    /*
     fetch('http://201.132.203.2/ActualizarRecibo/',{
         method: 'PATCH',
         headers: {
@@ -183,10 +201,28 @@ peticionPut=()=>{
     })
     .catch(function(err) {
         console.error(err);
-    });
+    });*/
+    
+    axios({
+      method: 'patch', //you can set what request you want to be
+      url: 'http://201.132.203.2/ActualizarRecibo/',
+      data: {
+        idRecibo: this.state.form.idRecibo,
+        proveedor: this.state.form.proveedor,
+        monto: parseFloat(this.state.form.monto),
+        moneda: this.state.form.moneda,
+        comentario: this.state.form.comentario
+        },
+      headers: {
+        Authorization: 'Bearer ' +cookies.get('token')
+      }
+    })
     this.modalEditar();
     this.cargarDatos();
-}
+    
+     
+    }
+    
 
 peticionDelete=()=>{
     axios.delete(
@@ -306,6 +342,10 @@ cancelarPut=()=>{
 /*modal para error de campos vacios*/
 modalVacios=()=>{
   this.setState({modalVacios: !this.state.modalVacios});
+}
+
+sessionTimeOut=()=>{
+  setInterval(this.cerrarSesion(),(10000));
 }
 
     render() {
