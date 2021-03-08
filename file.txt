@@ -1,0 +1,8 @@
+axios({
+  method: 'post', //you can set what request you want to be
+  url: 'https://example.com/request',
+  data: {id: varID},
+  headers: {
+    Authorization: 'Bearer ' + varToken
+  }
+})
